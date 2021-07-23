@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'AdminLTE')
+@section('title', 'Punch Chain')
 
 @section('content_header')
     <h1>Punch Chains</h1>
