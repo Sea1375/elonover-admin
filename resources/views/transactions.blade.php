@@ -30,12 +30,14 @@
                     <tr>
                         <td>No</td>
                         <td>User</td>
-                        <td>Buy Amount</td>
+                        <td>Amount</td>
                         <td>Cost</td>
                         <td>Wallet Address</td>
-                        <td>Payment Code</td>
+                        <td>Pay Code</td>
                         <td>Time</td>
-                        <td>Status</td>
+                        <td>Payment</td>
+                        <td>Sending Status</td>
+                        <td>Action</td>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -51,10 +53,10 @@
         $(function() {
             
             var appUrl = '{{ env('APP_URL') }}';
+            var hookURL = '{{ env('HOOK_URL') }}';
             
             var dt;
             var transactions = @json($transactions);
-            console.log(transactions);
 
             initDt(transactions);
 
@@ -79,16 +81,28 @@
                                     var imageUrl = data.user.image ? appUrl + '/' + data.user.image : appUrl + '/img/others/profile.png';
                                     var html = `<div class="user_info">
                                                     <img src="${imageUrl}" />
-                                                    <span>${data.user.full_name}</span>
+                                                    <span>${data.user.full_name.length > 10 ? data.user.full_name.substr(0, 10) + '...' : data.user.full_name}</span>
                                                 </div>`
                                     return html;
                                 }
                             },
                             {   data: 'token_amount' },
                             {   data: 'buy_cost' },
-                            {   data: 'wallet_address' },
+                            {   data: data => data.wallet_address.length > 10 ? data.wallet_address.substr(0, 10) + '...' : data.wallet_address },
                             {   data: 'payment_code' },
                             {   data: 'time' },
+                            {   
+                                data: (data) => {
+                                    if (data.payment_status == 'confirmed') {
+                                        var html = `<span class="text-success">Confirmed</span>`    
+                                    } else if (data.payment_status == 'pending') {
+                                        var html = `<span class="text-warning">Pending</span>`    
+                                    } else {
+                                        var html = `<span class="text-danger">Cancelled</span>`    
+                                    }
+                                    return html;
+                                }
+                            },
                             {   
                                 data: (data) => {
                                     if (data.purchase_status == 'success') {
@@ -101,8 +115,47 @@
                                     return html;
                                 }
                             },
+                            {
+                                width: '60px',
+                                data: function(data) {
+                                    var html = '';
+
+                                    if (data.purchase_status == 'cancelled')
+                                        html += '<a class="btn btn-xs btn-success action_btn" data-code="' + data.payment_code + '" style="margin-right:5px">Send</a>';
+                                    if (data.tx_hash && data.purchase_status == 'success')
+                                        html += '<a class="btn btn-xs btn-info view_sms_btn" target="_blank" href="https://bscscan.com/tx/'
+                                             + data.tx_hash + '">View</a>'
+
+                                    return html;
+                                }
+                            }
                             
                         ]
+                    });
+
+                    $('#transaction-table').on('click', 'tbody td .action_btn', function(e) {
+                        var ele = e.target;
+                        var code = $(ele).data('code');
+
+                        $.ajax({
+                            method: 'post',
+                            url: hookURL + '/manual_send',
+                            data: {
+                                code: code
+                            },
+                            success: (res) => {
+                                res = JSON.parse(res);
+                                console.log(res);
+                                if (res.success) {
+                                    alert('Request sent. Wait a moment. Please refresh after few moment. It would take some time.');
+                                } else {
+                                    alert('Error occured');
+                                }
+                            },
+                            error: (err) => {
+                                console.log(err);
+                            }
+                        })
                     });
                 }
             }
