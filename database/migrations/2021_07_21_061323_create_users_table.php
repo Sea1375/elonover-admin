@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('email_address');
             $table->string('password')->nullable();
             $table->string('google_id')->nullable();
-            $table->string('address')->nullable();
+            $table->string('social_link')->nullable();
             $table->string('default_wallet')->nullable();
             $table->string('image')->nullable();
         });

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 2',
+    'title' => 'Elonover',
 
     'title_prefix' => '',
 
@@ -136,17 +136,17 @@ return [
         [
             'text' => 'Transactions',
             'url'  => 'transactions',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-exchange-alt',
         ],
         [
             'text' => 'Punch Chain',
             'url'  => 'punch_chains',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-shopping-bag',
         ],
         [
             'text' => 'Settings',
             'url'  => 'settings',
-            'icon' => 'fas fa-fw fa-user',
+            'icon' => 'fas fa-fw fa-cog',
         ],
         // [
         //     'text' => 'Incoming SMS',
