@@ -24,7 +24,7 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        $transactions = Transaction::with('user')->get();
+        $transactions = Transaction::with('user')->orderBy('time', 'desc')->get();
         return view('transactions', compact('transactions'));
     }
 

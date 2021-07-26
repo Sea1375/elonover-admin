@@ -69,6 +69,7 @@
                         'ordering'    : true,
                         'info'        : true,
                         'autoWidth'   : false,
+                        // "order": [[ 0, "desc" ]],
                         "columns": [ 
                             {
                                 width: '20px',
@@ -88,8 +89,20 @@
                             },
                             {   data: 'token_amount' },
                             {   data: 'buy_cost' },
-                            {   data: data => data.wallet_address.length > 10 ? data.wallet_address.substr(0, 10) + '...' : data.wallet_address },
-                            {   data: 'payment_code' },
+                            {   
+                                data: (data) => {
+                                    return `<a href="https://bscscan.com/address/${data.wallet_address}" target="_blank" title="${data.wallet_address}">
+                                                ${data.wallet_address.length > 10 ? data.wallet_address.substr(0, 10) + '...' : data.wallet_address}
+                                            </a>`
+                                }
+                            },
+                            {   
+                                data: (data) => {
+                                    return `<a href="https://commerce.coinbase.com/charges/${data.payment_code}" target="_blank">
+                                                ${data.payment_code}
+                                            </a>`
+                                }
+                            },
                             {   data: 'time' },
                             {   
                                 data: (data) => {
